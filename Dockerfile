@@ -27,7 +27,9 @@ RUN rm /etc/nginx/sites-enabled/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN  chown -R www-data:www-data /var/lib/nginx
+RUN mkdir /var/lib/nginx/{body, fastcgi}
+RUN chown -R www-data:www-data /var/lib/nginx
+
 EXPOSE 80 443
 
 # Install Node.js 6.x repository
