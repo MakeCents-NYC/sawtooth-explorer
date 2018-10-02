@@ -13,31 +13,7 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 
-FROM ubuntu:xenial
-
-RUN apt update && apt install -y \
-    git \
-    curl
-
-RUN apt-get update
-RUN apt-get install -y nginx
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN rm /etc/nginx/sites-enabled/default
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-RUN mkdir /var/lib/nginx/{body, fastcgi}
-RUN chown -R www-data:www-data /var/lib/nginx
-
-EXPOSE 80 443
-
-# Install Node.js 6.x repository
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-
-# Install Node.js and npm
-RUN apt-get install -y nodejs && apt update
-
+FROM node:6-onbuild
 
 RUN \
  if [ ! -z $HTTP_PROXY ] && [ -z $http_proxy ]; then \
@@ -53,21 +29,6 @@ RUN \
   npm config set https-proxy $https_proxy; \
  fi;
 
-WORKDIR /app
+RUN npm run build
 
-RUN git clone http://github.com/MakeCents-NYC/sawtooth-explorer .
-
-RUN npm install
-#COPY . /app
-
-#RUN cd /project
-
-RUN npm run build -prod
-
-RUN mkdir /www
-
-RUN mkdir /www/ste
-# clean up the rest?
-
-RUN mv dist /www/ste/
-
+RUN mv dist ../
