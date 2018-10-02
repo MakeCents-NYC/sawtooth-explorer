@@ -31,4 +31,4 @@ RUN \
 
 RUN npm run build
 
-RUN mv dist ../
+RUN mv dist ../www/ste
